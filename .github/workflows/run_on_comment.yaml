@@ -1,0 +1,30 @@
+name: Comment Triggered Workflow
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  comment_triggered_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Comment Content
+        id: comment
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issueComment = context.payload.comment.body.toLowerCase();
+            if (issueComment.includes('/run')) {
+              console.log('Comment includes /run, triggering workflow...');
+              return { runWorkflow: true };
+            } else {
+              console.log('Comment does not include /run, skipping workflow...');
+              return { runWorkflow: false };
+            }
+
+      - name: Run Workflow If Triggered
+        if: steps.comment.outputs.runWorkflow == 'true'
+        run: |
+          echo "Workflow triggered by comment!"
+          # Add your workflow steps here
