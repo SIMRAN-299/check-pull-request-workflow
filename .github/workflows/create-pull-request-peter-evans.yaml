@@ -34,8 +34,5 @@ jobs:
 
             [1]: https://github.com/peter-evans/create-pull-request
           labels: report, automated pr
-          assignees: peter-evans
-          reviewers: peter-evans
-          team-reviewers: developers, qa-team
-          milestone: 1
+          
           draft: false
