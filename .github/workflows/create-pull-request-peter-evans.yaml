@@ -19,7 +19,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.PAT }}  # Use your Personal Access Token (PAT) secret
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use your Personal Access Token (PAT) secret
           commit-message: Update report
           committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           author: SIMRAN-299 <65976043+SIMRAN-299@users.noreply.github.com>
