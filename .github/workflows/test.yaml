@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      BRANCH_NAME: simran  # Define the branch name as an environment variable
+      BRANCH_NAME: simran2  # Define the branch name as an environment variable
 
     steps:
       - name: Checkout Repository
