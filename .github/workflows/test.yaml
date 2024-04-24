@@ -1,9 +1,8 @@
 name: Create Pull Request
 
 on:
-  push:
-    branches:
-      - main
+  issue_comment:
+    types: [created]  # Trigger the workflow on new issue comments
 
 jobs:
   create_pull_request:
@@ -22,7 +21,7 @@ jobs:
 
       - name: Make Changes
         run: |
-          echo "Hello, world 9!" > new-file.txt
+          echo "Hello, world 10!" > new-file.txt
 
       - name: Commit Changes
         run: |
