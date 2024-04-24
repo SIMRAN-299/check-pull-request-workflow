@@ -6,23 +6,32 @@ on:
       - main
 
 jobs:
-  comment_triggered_job:
+  create_pull_request:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Make changes to pull request
-        run: date +%s > simran.txt
+      - name: Make Changes
+        run: |
+          echo $(date +%s) > simran.txt
 
+      - name: Set Pull Request Details
+        id: pr_details
+        run: |
+          echo "::set-env name=PR_TITLE::Propose changes from external repository"
+          echo "::set-env name=PR_BODY::This pull request was created automatically from changes made in an external repository."
+          echo "::set-env name=PR_HEAD::$(git rev-parse HEAD)"
+          echo "::set-env name=PR_BASE::main"
 
       - name: Create Pull Request
         run: |
-          PR_TITLE="Propose changes from external repository"
-          PR_BODY="This pull request was created automatically from changes made in an external repository."
-          PR_HEAD="kcl-update"  # Branch where changes are coming from
-          PR_BASE="main"  # Branch where changes will be merged into
-
+          PR_TITLE="${{ env.PR_TITLE }}"
+          PR_BODY="${{ env.PR_BODY }}"
+          PR_HEAD="${{ env.PR_HEAD }}"
+          PR_BASE="${{ env.PR_BASE }}"
+          
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
@@ -34,8 +43,3 @@ jobs:
               "base": "'"$PR_BASE"'"
             }' \
             "https://api.github.com/repos/SIMRAN-299/check-pull-request-workflow/pulls"
-
-
- 
-          
-         
