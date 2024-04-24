@@ -19,7 +19,7 @@ jobs:
 
       - name: Make Changes
         run: |
-          echo "Hello, world!" > new-file.txt
+          echo "Hello, world 2!" > new-file.txt
 
       - name: Commit Changes
         run: |
