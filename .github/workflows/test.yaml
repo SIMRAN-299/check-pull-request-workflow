@@ -3,7 +3,7 @@ name: Create Pull Request
 on:
   push:
     branches:
-      - main  # Trigger the workflow on push events to the main branch
+      - main
 
 jobs:
   create_pull_request:
@@ -13,41 +13,40 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install Dependencies
-        run: npm install @octokit/core
-
-      - name: Create Branch and Pull Request
+      - name: Create New Branch
         run: |
-          const { Octokit } = require('@octokit/core');
-          const octokit = new Octokit({
-            auth: process.env.GITHUB_TOKEN  // Use the repository's secret token
-          });
+          git checkout -b kcl-update
 
-          const branchName = 'new-feature';  // Specify the new branch name
-          const baseBranch = 'main';  // Specify the base branch for the pull request
+      - name: Make Changes
+        run: |
+          echo "Hello, world!" > new-file.txt
 
-          // Create a new branch pointing to the latest commit of the base branch
-          const createRefResponse = await octokit.request('POST /repos/{owner}/{repo}/git/refs', {
-            owner: process.env.GITHUB_REPOSITORY_OWNER,
-            repo: process.env.GITHUB_REPOSITORY,
-            ref: `refs/heads/${branchName}`,
-            sha: process.env.GITHUB_SHA  // Use the latest commit SHA of the base branch
-          });
+      - name: Commit Changes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit -m "Add new-file.txt via GitHub Actions"
 
-          // Get the repository owner and name
-          const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+      - name: Push Changes to New Branch
+        run: |
+          git push origin kcl-update
 
-          // Create a pull request from the new branch to the base branch
-          await octokit.request('POST /repos/{owner}/{repo}/pulls', {
-            owner: owner,
-            repo: repo,
-            title: 'New Feature',
-            body: 'This pull request was created automatically from changes made in the main branch.',
-            head: `${owner}:${branchName}`,
-            base: baseBranch
-          });
+      - name: Create Pull Request
+        run: |
+          PR_TITLE="Propose changes from external repository"
+          PR_BODY="This pull request was created automatically from changes made in a new branch."
+          PR_HEAD="kcl-update"  # Branch where changes are coming from
+          PR_BASE="main"  # Branch where changes will be merged into
+
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{
+              "title": "'"$PR_TITLE"'",
+              "body": "'"$PR_BODY"'",
+              "head": "'"$PR_HEAD"'",
+              "base": "'"$PR_BASE"'"
+            }' \
+            "https://api.github.com/repos/${{ github.repository }}/pulls"
