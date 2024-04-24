@@ -9,13 +9,16 @@ jobs:
   create_pull_request:
     runs-on: ubuntu-latest
 
+    env:
+      BRANCH_NAME: simran  # Define the branch name as an environment variable
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
       - name: Create New Branch
         run: |
-          git checkout -b simran
+          git checkout -b $BRANCH_NAME  # Use the environment variable for branch name
 
       - name: Make Changes
         run: |
@@ -30,14 +33,13 @@ jobs:
 
       - name: Push Changes to New Branch
         run: |
-          git push origin simran
-
+          git push origin $BRANCH_NAME  # Use the environment variable for branch name
 
       - name: Create Pull Request
         run: |
           PR_TITLE="Propose changes from external repository"
           PR_BODY="This pull request was created automatically from changes made in a new branch."
-          PR_HEAD="simran"  # Branch where changes are coming from
+          PR_HEAD="$BRANCH_NAME"  # Use the environment variable for branch name
           PR_BASE="main"  # Branch where changes will be merged into
 
           curl -X POST \
