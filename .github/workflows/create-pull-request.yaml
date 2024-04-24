@@ -24,7 +24,6 @@ jobs:
               return { runWorkflow: false };
             }
 
-
       - name: Create New Branch
         if: steps.comment.outputs.runWorkflow == 'true'
         run: |
