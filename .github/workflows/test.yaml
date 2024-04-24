@@ -1,0 +1,53 @@
+name: Create Pull Request
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on push events to the main branch
+
+jobs:
+  create_pull_request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Dependencies
+        run: npm install @octokit/core
+
+      - name: Create Branch and Pull Request
+        run: |
+          const { Octokit } = require('@octokit/core');
+          const octokit = new Octokit({
+            auth: process.env.GITHUB_TOKEN  // Use the repository's secret token
+          });
+
+          const branchName = 'new-feature';  // Specify the new branch name
+          const baseBranch = 'main';  // Specify the base branch for the pull request
+
+          // Create a new branch pointing to the latest commit of the base branch
+          const createRefResponse = await octokit.request('POST /repos/{owner}/{repo}/git/refs', {
+            owner: process.env.GITHUB_REPOSITORY_OWNER,
+            repo: process.env.GITHUB_REPOSITORY,
+            ref: `refs/heads/${branchName}`,
+            sha: process.env.GITHUB_SHA  // Use the latest commit SHA of the base branch
+          });
+
+          // Get the repository owner and name
+          const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+
+          // Create a pull request from the new branch to the base branch
+          await octokit.request('POST /repos/{owner}/{repo}/pulls', {
+            owner: owner,
+            repo: repo,
+            title: 'New Feature',
+            body: 'This pull request was created automatically from changes made in the main branch.',
+            head: `${owner}:${branchName}`,
+            base: baseBranch
+          });
