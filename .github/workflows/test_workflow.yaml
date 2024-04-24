@@ -20,10 +20,10 @@ jobs:
       - name: Set Pull Request Details
         id: pr_details
         run: |
-          echo "::set-env name=PR_TITLE::Propose changes from external repository"
-          echo "::set-env name=PR_BODY::This pull request was created automatically from changes made in an external repository."
-          echo "::set-env name=PR_HEAD::$(git rev-parse HEAD)"
-          echo "::set-env name=PR_BASE::main"
+          echo "PR_TITLE=Propose changes from external repository" >> $GITHUB_ENV
+          echo "PR_BODY=This pull request was created automatically from changes made in an external repository." >> $GITHUB_ENV
+          echo "PR_HEAD=$(git rev-parse HEAD)" >> $GITHUB_ENV
+          echo "PR_BASE=main" >> $GITHUB_ENV
 
       - name: Create Pull Request
         run: |
