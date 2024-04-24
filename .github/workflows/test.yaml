@@ -15,7 +15,7 @@ jobs:
 
       - name: Create New Branch
         run: |
-          git checkout -b kcl-update
+          git checkout -b simran
 
       - name: Make Changes
         run: |
@@ -30,13 +30,13 @@ jobs:
 
       - name: Push Changes to New Branch
         run: |
-          git push origin kcl-update
+          git push origin simran
 
       - name: Create Pull Request
         run: |
           PR_TITLE="Propose changes from external repository"
           PR_BODY="This pull request was created automatically from changes made in a new branch."
-          PR_HEAD="kcl-update"  # Branch where changes are coming from
+          PR_HEAD="simran"  # Branch where changes are coming from
           PR_BASE="main"  # Branch where changes will be merged into
 
           curl -X POST \
