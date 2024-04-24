@@ -1,0 +1,40 @@
+name: Create Pull Request
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  comment_triggered_job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Make changes to pull request
+        run: date +%s > simran.txt
+
+      - name: Create Pull Request
+        run: |
+          PR_TITLE="Propose changes from external repository"
+          PR_BODY="This pull request was created automatically from changes made in an external repository."
+          PR_HEAD="kcl-update"  # Branch where changes are coming from
+          PR_BASE="main"  # Branch where changes will be merged into
+
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{
+              "title": "'"$PR_TITLE"'",
+              "body": "'"$PR_BODY"'",
+              "head": "'"$PR_HEAD"'",
+              "base": "'"$PR_BASE"'"
+            }' \
+            "https://api.github.com/repos/SIMRAN-299/check-pull-request-workflow/pulls"
+
+
+ 
+          
+         
