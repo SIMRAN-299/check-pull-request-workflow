@@ -21,7 +21,7 @@ jobs:
 
       - name: Make Changes
         run: |
-          echo "Hello, world 20!" > new-file.txt
+          echo "Hello, world 10!" > new-file.txt
 
       - name: Commit Changes
         run: |
