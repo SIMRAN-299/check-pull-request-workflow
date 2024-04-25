@@ -1,16 +1,12 @@
 name: Create Pull Request
 on:
-  push:
-    branches:
-      - main
+  issue_comment:
+    types: [created]  # Trigger the workflow on new issue comments
 jobs:
   create_pull_request:
     runs-on: ubuntu-latest
-
     env:
-      BRANCH_NAME: simran2  # Define the branch name as an environment variable
-      BRANCH_NAME: simran3  # Define the branch name as an environment variable
-
+      BRANCH_NAME: update_branch_5  # Define the branch name as an environment variable
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -19,7 +15,8 @@ jobs:
           git checkout -b $BRANCH_NAME  # Use the environment variable for branch name
       - name: Make Changes
         run: |
-          echo "Hello, world 3!" > new-file.txt
+          echo "Hello, world 20!" > new-file.txt
+          echo "Hello, world 10!" > new-file.txt
       - name: Commit Changes
         run: |
           git config --local user.email "actions@github.com"
@@ -30,12 +27,13 @@ jobs:
         run: |
           git push origin $BRANCH_NAME  # Use the environment variable for branch name
       - name: Create Pull Request
+        id: create_pr
         run: |
           PR_TITLE="Propose changes from external repository"
           PR_BODY="This pull request was created automatically from changes made in a new branch."
           PR_HEAD="$BRANCH_NAME"  # Use the environment variable for branch name
           PR_BASE="main"  # Branch where changes will be merged into
-          curl -X POST \
+          response=$(curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
             -H "Accept: application/vnd.github.v3+json" \
@@ -45,4 +43,6 @@ jobs:
               "head": "'"$PR_HEAD"'",
               "base": "'"$PR_BASE"'"
             }' \
-            "https://api.github.com/repos/${{ github.repository }}/pulls"
+            "https://api.github.com/repos/${{ github.repository }}/pulls")
+          echo "::set-output name=pull_request_number::$(echo "$response" | jq -r '.number')"
+     
