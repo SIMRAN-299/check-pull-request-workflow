@@ -11,14 +11,15 @@ jobs:
     env:
       BRANCH_NAME: update_branch_2  # Define the branch name as an environment variable
 
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Create New Branch
-        run: |
-          git checkout -b $BRANCH_NAME  # Use the environment variable for branch name
+      - name: Fetch Remote Branch
+        run: git fetch origin $BRANCH_NAME
+
+      - name: Merge Remote Changes
+        run: git merge origin/$BRANCH_NAME
 
       - name: Make Changes
         run: |
