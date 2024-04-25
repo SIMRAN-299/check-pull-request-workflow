@@ -1,21 +1,36 @@
 name: Create Pull Request
 on:
   issue_comment:
-    types: [created]  # Trigger the workflow on new issue comments
+    types: [created]
+
 jobs:
   create_pull_request:
     runs-on: ubuntu-latest
     env:
-      BRANCH_NAME: update_branch_5  # Define the branch name as an environment variable
+      BRANCH_NAME: update_branch_6  # Define the branch name as an environment variable
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-      - name: Create New Branch
+
+      - name: Check if Branch Exists
+        id: check_branch
         run: |
-          git checkout -b $BRANCH_NAME  # Use the environment variable for branch name
+          if git show-ref --quiet refs/heads/$BRANCH_NAME; then
+            echo "Branch $BRANCH_NAME already exists."
+          else
+            echo "Branch $BRANCH_NAME does not exist. Creating..."
+            git checkout -b $BRANCH_NAME
+          fi
+
+      - name: Checkout Existing Branch
+        if: steps.check_branch.outputs.result == 'Branch $BRANCH_NAME already exists.'
+        run: |
+          git checkout $BRANCH_NAME
+
       - name: Make Changes
         run: |
-          echo "Hello, world 20!" > new-file.txt
+          echo "Hello, world 30!" > new-file.txt
           
       - name: Commit Changes
         run: |
@@ -23,16 +38,19 @@ jobs:
           git config --local user.name "GitHub Actions"
           git add .
           git commit -m "Add new-file.txt via GitHub Actions"
-      - name: Push Changes to New Branch
+
+      - name: Push Changes to Branch
         run: |
-          git push origin $BRANCH_NAME  # Use the environment variable for branch name
+          git push origin $BRANCH_NAME
+
       - name: Create Pull Request
+        if: steps.check_branch.outputs.result == 'Branch $BRANCH_NAME does not exist. Creating...'
         id: create_pr
         run: |
           PR_TITLE="Propose changes from external repository"
           PR_BODY="This pull request was created automatically from changes made in a new branch."
-          PR_HEAD="$BRANCH_NAME"  # Use the environment variable for branch name
-          PR_BASE="main"  # Branch where changes will be merged into
+          PR_HEAD="$BRANCH_NAME"
+          PR_BASE="main"
           response=$(curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
@@ -45,4 +63,3 @@ jobs:
             }' \
             "https://api.github.com/repos/${{ github.repository }}/pulls")
           echo "::set-output name=pull_request_number::$(echo "$response" | jq -r '.number')"
-     
