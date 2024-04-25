@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      BRANCH_NAME: update_branch  # Define the branch name as an environment variable
+      BRANCH_NAME: update_branch_2  # Define the branch name as an environment variable
 
     steps:
       - name: Checkout Repository
@@ -21,7 +21,7 @@ jobs:
 
       - name: Make Changes
         run: |
-          echo "Hello, world 10!" > new-file.txt
+          echo "Hello, world 20!" > new-file.txt
 
       - name: Commit Changes
         run: |
@@ -55,18 +55,3 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/pulls")
 
           echo "::set-output name=pull_request_number::$(echo "$response" | jq -r '.number')"
-
-      - name: Merge Pull Request
-        if: steps.create_pr.outputs.pull_request_number != ''
-        run: |
-          PR_NUMBER="${{ steps.create_pr.outputs.pull_request_number }}"
-          curl -X PUT \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -d '{"commit_title": "Merge PR"}' \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/merge"
-
-      - name: Delete Branch After Merge
-        if: success() && steps.create_pr.outputs.pull_request_number != ''
-        run: |
-          git push --delete origin $BRANCH_NAME  # Delete the branch on the remote repository
