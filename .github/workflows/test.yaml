@@ -1,66 +1,41 @@
-name: Create or Update Pull Request
-
+name: Create Pull Request
 on:
-  issue_comment:
-    types: [created]  # Trigger the workflow on new issue comments
-
+  push:
+    branches:
+      - main
 jobs:
-  create_or_update_pull_request:
+  create_pull_request:
     runs-on: ubuntu-latest
 
     env:
-      BRANCH_NAME: update_branch_3  # Define the branch name as an environment variable
+      BRANCH_NAME: simran2  # Define the branch name as an environment variable
+      BRANCH_NAME: simran3  # Define the branch name as an environment variable
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-
-      - name: Check Existing Branch
-        id: check_branch
+      - name: Create New Branch
         run: |
-          if git rev-parse --verify $BRANCH_NAME >/dev/null 2>&1; then
-            echo "::set-output name=branch_exists::true"
-          else
-            echo "::set-output name=branch_exists::false"
-          fi
-
-      - name: Check Existing Pull Request
-        id: check_pull_request
+          git checkout -b $BRANCH_NAME  # Use the environment variable for branch name
+      - name: Make Changes
         run: |
-          response=$(curl -s -X GET \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls?head=${{ github.repository_owner }}:$BRANCH_NAME")
-          if [ $(echo "$response" | jq length) -gt 0 ]; then
-            echo "::set-output name=pull_request_exists::true"
-          else
-            echo "::set-output name=pull_request_exists::false"
-          fi
-
-      - name: Create or Update Pull Request
-        id: create_or_update_pr
-        if: steps.check_branch.outputs.branch_exists == 'true' && steps.check_pull_request.outputs.pull_request_exists == 'true'
+          echo "Hello, world 3!" > new-file.txt
+      - name: Commit Changes
         run: |
-          PR_NUMBER=$(echo "$response" | jq -r '.[0].number')
-          PR_BODY="This pull request was updated automatically."
-
-          curl -X PATCH \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"body\": \"$PR_BODY\"}" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER"
-
-          echo "::set-output name=pull_request_number::${PR_NUMBER}"
-
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit -m "Add new-file.txt via GitHub Actions"
+      - name: Push Changes to New Branch
+        run: |
+          git push origin $BRANCH_NAME  # Use the environment variable for branch name
       - name: Create Pull Request
-        id: create_pr
-        if: steps.check_branch.outputs.branch_exists == 'true' && steps.check_pull_request.outputs.pull_request_exists == 'false'
         run: |
           PR_TITLE="Propose changes from external repository"
           PR_BODY="This pull request was created automatically from changes made in a new branch."
           PR_HEAD="$BRANCH_NAME"  # Use the environment variable for branch name
           PR_BASE="main"  # Branch where changes will be merged into
-
-          response=$(curl -X POST \
+          curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
             -H "Accept: application/vnd.github.v3+json" \
@@ -70,6 +45,4 @@ jobs:
               "head": "'"$PR_HEAD"'",
               "base": "'"$PR_BASE"'"
             }' \
-            "https://api.github.com/repos/${{ github.repository }}/pulls")
-
-          echo "::set-output name=pull_request_number::$(echo "$response" | jq -r '.number')"
+            "https://api.github.com/repos/${{ github.repository }}/pulls"
