@@ -44,7 +44,7 @@ jobs:
           git push origin $BRANCH_NAME
 
       - name: Create Pull Request
-        if: steps.check_branch.outputs.result == 'Branch $BRANCH_NAME does not exist. Creating...'
+      
         id: create_pr
         run: |
           PR_TITLE="Propose changes from external repository"
