@@ -7,7 +7,7 @@ jobs:
   create_pull_request:
     runs-on: ubuntu-latest
     env:
-      BRANCH_NAME: update_branch_10  # Define the branch name as an environment variable
+      BRANCH_NAME: update_branch_8  # Define the branch name as an environment variable
 
     steps:
       - name: Checkout Repository
@@ -19,19 +19,20 @@ jobs:
           echo "Checking if branch $BRANCH_NAME exists remotely..."
           if git ls-remote --heads origin $BRANCH_NAME | grep -q "refs/heads/$BRANCH_NAME"; then
             echo "Branch $BRANCH_NAME already exists remotely."
-            echo "::set-output name=result::Branch $BRANCH_NAME already exists."
+            echo "::set-output name=result::exists"
           else
             echo "Branch $BRANCH_NAME does not exist remotely."
-            echo "::set-output name=result::Branch $BRANCH_NAME does not exist."
+            echo "::set-output name=result::not_exists"
           fi
 
       - name: Checkout Existing Branch
-        if: steps.check_branch_remotely.outputs.result == 'Branch $BRANCH_NAME already exists.'
+        if: steps.check_branch_remotely.outputs.result == 'exists'
         run: |
+          git fetch origin $BRANCH_NAME:$BRANCH_NAME
           git checkout $BRANCH_NAME
 
       - name: Create New Branch
-        if: steps.check_branch_remotely.outputs.result == 'Branch $BRANCH_NAME does not exist.'
+        if: steps.check_branch_remotely.outputs.result == 'not_exists'
         run: |
           git checkout -b $BRANCH_NAME
 
