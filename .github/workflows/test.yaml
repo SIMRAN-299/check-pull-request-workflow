@@ -7,7 +7,7 @@ jobs:
   create_pull_request:
     runs-on: ubuntu-latest
     env:
-      BRANCH_NAME: update_branch_11  # Define the branch name as an environment variable
+      BRANCH_NAME: update_branch_12  # Define the branch name as an environment variable
 
     steps:
       - name: Checkout Repository
