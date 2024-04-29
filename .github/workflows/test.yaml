@@ -13,15 +13,18 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Check if Branch Exists
-        id: check_branch
+      - name: Check if Branch Exists Remotely
+        id: check_branch_remotely
         run: |
-          if git show-ref --quiet refs/heads/$BRANCH_NAME; then
-            echo "Branch $BRANCH_NAME already exists."
+          echo "Checking if branch $BRANCH_NAME exists remotely..."
+          if git ls-remote --heads origin $BRANCH_NAME | grep -q "refs/heads/$BRANCH_NAME"; then
+            echo "Branch $BRANCH_NAME already exists remotely."
           else
-            echo "Branch $BRANCH_NAME does not exist. Creating..."
-            git checkout -b $BRANCH_NAME
+            echo "Branch $BRANCH_NAME does not exist remotely."
+        # Further actions can be added here, such as creating the branch remotely
           fi
+
+      
 
       - name: Checkout Existing Branch
         if: steps.check_branch.outputs.result == 'Branch $BRANCH_NAME already exists.'
@@ -30,7 +33,7 @@ jobs:
 
       - name: Make Changes
         run: |
-          echo "Hello, world 30!" > new-file.txt
+          echo "Hello, world 40!" > new-file.txt
           
       - name: Commit Changes
         run: |
