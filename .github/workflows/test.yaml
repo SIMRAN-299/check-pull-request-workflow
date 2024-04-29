@@ -38,7 +38,7 @@ jobs:
 
       - name: Make Changes
         run: |
-          echo "Hello, world 999!" > new-file.txt
+          echo "Hello, world 1000!" > new-file.txt
 
       - name: Commit Changes
         run: |
