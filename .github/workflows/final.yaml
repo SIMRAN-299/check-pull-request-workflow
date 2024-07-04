@@ -36,9 +36,16 @@ jobs:
         run: |
           git checkout -b $BRANCH_NAME
 
+      - name: Read Version from Terraform File
+        id: read_version
+        run: |
+          VERSION=$(grep 'version' terraform/test-1/terraform.tfvars | awk -F '\"' '{print $2}')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Terraform version: $VERSION"
+
       - name: Make Changes
         run: |
-          echo "Hello, world 100!" > new-file.txt
+          echo "Hello, world 20!" > new-file.txt
 
       - name: Commit Changes
         run: |
