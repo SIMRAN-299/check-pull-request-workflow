@@ -8,7 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: update_version  # Define the branch name as an environment variable
-      NEW_VERSION: 20.21.1         # New version
+      NEW_VERSION: 20.22.1         # New version
+      FLAG: 0
 
     steps:
       - name: Checkout Repository
@@ -50,15 +51,13 @@ jobs:
               echo "Updating version to $NEW_VERSION"
               sed -i 's/version = \"'$VERSION'\"/version = \"'$NEW_VERSION'\"/' "$FILE_PATH"
               echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
+              FLAG = 1
+              echo "$FLAG"
             fi
           }
           update_version terraform/test-1/terraform.tfvars
           update_version terraform/test-2/terraform.tfvars
           update_version terraform/test-3/terraform.tfvars
-
-      - name: Make Changes
-        run: |
-          echo "Hello, world 20!" > new-file.txt
 
       - name: Commit Changes
         run: |
