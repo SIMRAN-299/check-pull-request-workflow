@@ -53,6 +53,8 @@ jobs:
             fi
           }
           update_version terraform/test-1/terraform.tfvars
+          update_version terraform/test-2/terraform.tfvars
+          update_version terraform/test-3/terraform.tfvars
 
       - name: Make Changes
         run: |
