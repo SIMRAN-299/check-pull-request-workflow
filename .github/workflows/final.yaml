@@ -60,6 +60,7 @@ jobs:
           update_version terraform/test-3/terraform.tfvars
 
       - name: Commit Changes
+        if: ${{ env.FLAG == '1' }}
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
@@ -67,10 +68,12 @@ jobs:
           git commit -m "Add new-file.txt via GitHub Actions"
 
       - name: Push Changes to Branch
+        if: ${{ env.FLAG == '1' }}
         run: |
           git push origin $BRANCH_NAME
 
       - name: Create Pull Request
+        if: ${{ env.FLAG == '1' }}
         id: create_pr
         run: |
           PR_TITLE="feat: Updating terraform version "
