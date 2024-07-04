@@ -93,6 +93,4 @@ jobs:
             }' \
             "https://api.github.com/repos/${{ github.repository }}/pulls")
 
-          echo "API Response:"
-          echo "$response"
           echo "::set-output name=pull_request_number::$(echo "$response" | jq -r '.number')"
