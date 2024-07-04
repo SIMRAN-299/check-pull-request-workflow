@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: update_version  # Define the branch name as an environment variable
-      NEW_VERSION: 20.22.1         # New version
+      NEW_VERSION: 21.22.2         # New version
       FLAG: 0
 
     steps:
