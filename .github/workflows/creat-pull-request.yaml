@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: update_version_tst2  # Define the branch name as an environment variable
-      NEW_VERSION: 20.0.2        # New version
+      NEW_VERSION: 20.0.1        # New version
       FLAG: 0
 
     steps:
@@ -92,4 +92,7 @@ jobs:
               "labels": ["bug"]
             }' \
             "https://api.github.com/repos/${{ github.repository }}/pulls")
+
+          echo "API Response:"
+          echo "$response"
           echo "::set-output name=pull_request_number::$(echo "$response" | jq -r '.number')"
