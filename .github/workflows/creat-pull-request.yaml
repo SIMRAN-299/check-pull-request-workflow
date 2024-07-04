@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: update_version_tst2  # Define the branch name as an environment variable
-      NEW_VERSION: 20.1.1        # New version
+      NEW_VERSION: 26.1.1        # New version
       FLAG: 0
 
     steps:
@@ -105,12 +105,14 @@ jobs:
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
             -H "Accept: application/vnd.github.v3+json" \
+            --data-raw '{
+              "labels": ["bug"]
+            }'
             -d '{
               "title": "'"$PR_TITLE"'",
               "body": "'"$PR_BODY"'",
               "head": "'"$PR_HEAD"'",
               "base": "'"$PR_BASE"'",
-              "labels": ["bug"]
             }' \
             "https://api.github.com/repos/${{ github.repository }}/pulls")
 
