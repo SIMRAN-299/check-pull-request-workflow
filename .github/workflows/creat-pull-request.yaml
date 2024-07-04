@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: update_version_tst2  # Define the branch name as an environment variable
-      NEW_VERSION: 27.1.76       # New version
+      NEW_VERSION: 20.1.1        # New version
       FLAG: 0
 
     steps:
@@ -110,19 +110,8 @@ jobs:
               "body": "'"$PR_BODY"'",
               "head": "'"$PR_HEAD"'",
               "base": "'"$PR_BASE"'",
+              "labels": ["bug"]
             }' \
-            "https://api.github.com/repos/${{ github.repository }}/pulls") \
-            
+            "https://api.github.com/repos/${{ github.repository }}/pulls")
 
-          # PR_NUMBER=$(echo "$response" | jq -r '.number')
-          # echo "::set-output name=pull_request_number::$PR_NUMBER"
-
-          # curl -X POST \
-          #   -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          #   -H "Content-Type: application/json" \
-          #   -H "Accept: application/vnd.github.v3+json" \
-          #   --data '{
-          #     "labels": ["bug"]
-          #   }' \
-          #   "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/labels"
-          
+          echo "::set-output name=pull_request_number::$(echo "$response" | jq -r '.number')"
