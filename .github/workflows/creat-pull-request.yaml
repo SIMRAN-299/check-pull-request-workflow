@@ -89,7 +89,7 @@ jobs:
               "body": "'"$PR_BODY"'",
               "head": "'"$PR_HEAD"'",
               "base": "'"$PR_BASE"'",
-              "label": ["TST-ENV"]
+              "labels": ["TST-ENV"]
             }' \
             "https://api.github.com/repos/${{ github.repository }}/pulls")
           echo "::set-output name=pull_request_number::$(echo "$response" | jq -r '.number')"
