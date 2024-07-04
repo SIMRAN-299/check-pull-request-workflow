@@ -105,14 +105,12 @@ jobs:
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
             -H "Accept: application/vnd.github.v3+json" \
-            --data-raw '{
-              "labels": ["bug"]
-            }'
-            -d '{
+            --data '{
               "title": "'"$PR_TITLE"'",
               "body": "'"$PR_BODY"'",
               "head": "'"$PR_HEAD"'",
               "base": "'"$PR_BASE"'",
+              "labels": ["bug"]
             }' \
             "https://api.github.com/repos/${{ github.repository }}/pulls")
 
