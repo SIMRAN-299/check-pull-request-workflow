@@ -4,4 +4,4 @@ template = {
     version = "19.0.0"
 }
 
-project_id = "dummy-project"
+project_id_version = "simran"
