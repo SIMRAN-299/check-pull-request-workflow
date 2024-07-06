@@ -61,13 +61,13 @@ jobs:
           update_version() {
             local FILE_PATHS=("$@")  # Accept array of file paths
             for FILE_PATH in "${FILE_PATHS[@]}"; do
-              local VERSION=$(grep 'version' "$FILE_PATH" | awk -F '\"' '{print $2}')
+              VERSION=$(awk -F '\"' '/version/ {print $2; exit}' "$FILE_PATH")
               echo "VERSION=$VERSION" >> $GITHUB_ENV
               echo "Terraform version: $VERSION"
       
                     if [ "$VERSION" != "$NEW_VERSION" ]; then
                       echo "Updating version in $FILE_PATH to $NEW_VERSION"
-                      sed -i 's/version = \"'$VERSION'\"/version = \"'$NEW_VERSION'\"/' "$FILE_PATH"
+                      sed -i '0,/version = \"'$VERSION'\"/s//version = \"'$NEW_VERSION'\"/' "$FILE_PATH"
                       echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
                       FLAG=1
                       echo "FLAG=$FLAG" >> $GITHUB_ENV
