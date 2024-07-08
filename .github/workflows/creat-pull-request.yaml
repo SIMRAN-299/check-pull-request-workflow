@@ -128,25 +128,14 @@ jobs:
             }' \
             "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/labels"
 
-      - name: Check for Closed Pull Request
-        if: ${{ env.FLAG == '0' }}
-        id: check_pr
+      - name: List Closed Pull Requests on Branch
+        if: ${{ env.FLAG == '1' }}
+        id: list_closed_prs
         run: |
-          PR_HEAD="$BRANCH_NAME"
-          PR_BASE="main"
+          CLOSED_PRS=$(curl -X GET \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&head=${{ github.repository_owner }}:$BRANCH_NAME")
       
-          # Get the pull request number
-          pr_response=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/pulls?head=${{ github.repository_owner }}:$PR_HEAD&base=$PR_BASE")
-          PR_NUMBER=$(echo "$pr_response" | jq -r '.[0].number')
-          PR_STATE=$(echo "$pr_response" | jq -r '.[0].state')
-      
-          if [ "$PR_STATE" == "closed" ]; then
-            echo "Reopening closed pull request #$PR_NUMBER"
-            curl -X PATCH \
-              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              -H "Content-Type: application/json" \
-              -H "Accept: application/vnd.github.v3+json" \
-              -d '{"state":"open"}' \
-              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER"
-          fi
+          echo "$CLOSED_PRS" | jq -r '.[] | "PR Number: \(.number), Title: \(.title), Merged: \(.merged_at)"'
       
