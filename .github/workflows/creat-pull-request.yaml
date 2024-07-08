@@ -129,7 +129,7 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/labels"
 
       - name: List Closed Pull Requests on Branch
-        if: ${{ env.FLAG == '1' }}
+        if: ${{ env.FLAG == '0' }}
         id: list_closed_prs
         run: |
           CLOSED_PRS=$(curl -X GET \
