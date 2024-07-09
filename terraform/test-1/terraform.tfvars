@@ -1,7 +1,7 @@
 template = {
     repo = "dummy-repo"
     path = "dummy-path"
-    version = "21.1.42"
+    version = "21.1.46"
 }
 
 project_id_version = "simran"
