@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: update_version_tst5  # Define the branch name as an environment variable
-      NEW_VERSION: 21.1.17        # New version
+      NEW_VERSION: 21.1.18        # New version
       FLAG: 0
 
     steps:
