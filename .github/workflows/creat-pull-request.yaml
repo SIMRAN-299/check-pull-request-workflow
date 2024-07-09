@@ -33,11 +33,35 @@ jobs:
           git fetch origin $BRANCH_NAME:$BRANCH_NAME
           git checkout $BRANCH_NAME
 
+      - name: List Closed Pull Requests on Branch
+        id: list_closed_prs
+        run: |
+          CLOSED_NON_MERGED_PRS=$(curl -X GET \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&head=${{ github.repository_owner }}:$BRANCH_NAME")
+
+          echo "$CLOSED_NON_MERGED_PRS" | jq -r '.[] | select(.merged_at == null) | "PR Number: \(.number), Title: \(.title), Closed At: \(.closed_at)"'
+          LAST_CLOSED_PR=$(echo "$CLOSED_NON_MERGED_PRS" | jq -r 'map(select(.merged_at == null)) | sort_by(.closed_at) | last')
+      
+          if [ -n "$LAST_CLOSED_PR" ]; then
+            PR_NUMBER=$(echo "$LAST_CLOSED_PR" | jq -r '.number')
+            echo "Opening PR #$PR_NUMBER"
+            curl -X PATCH \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Content-Type: application/json" \
+              -H "Accept: application/vnd.github.v3+json" \
+              -d '{"state": "open"}' \
+              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER"
+          else
+            echo "No closed, non-merged pull requests found."
+          fi
+
       - name: Create New Branch
         if: steps.check_branch_remotely.outputs.result == 'not_exists'
         run: |
           git checkout -b $BRANCH_NAME
-
+      
       - name: Read Version from Terraform File
         id: read_version
         run: |
