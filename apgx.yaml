@@ -1,5 +1,4 @@
-appName: simranApp
-work: simranwork
+work:
   team:
     env:
       tst:
