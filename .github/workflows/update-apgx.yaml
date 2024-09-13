@@ -7,7 +7,7 @@ jobs:
   create_pull_request:
     runs-on: ubuntu-latest
     env:
-      BRANCH_NAME: update_apgx_file  # Define the branch name as an environment variable
+      BRANCH_NAME: update_apgx_file2  # Define the branch name as an environment variable
       NEW_VERSION: 21.1.50        # New version
       FLAG: 1
 
