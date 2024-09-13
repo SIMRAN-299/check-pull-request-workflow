@@ -3,7 +3,7 @@ work: simranwork
   team:
     env:
       tst:
-        deploy_types: DO_NOT_DEPLOY
+        deploy_types: "DEPLOY_KEYSTORE"
       bld:
         deploy_types: DO_NOT_DEPLOY
       int:
