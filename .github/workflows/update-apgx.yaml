@@ -66,12 +66,11 @@ jobs:
         id: read_version
         run: |
           FILE_PATH="apgx.yaml"
-          ENVIRONMENT="${{ github.event.inputs.environment }}"
-          DEPLOY_TYPE="${{ github.event.inputs.deploy_type_value }}"
+          ENVIRONMENT="tst"      # Set the environment to update (e.g., tst)
+          DEPLOY_TYPE="DEPLOY_KEYSTORE"  # Set the new deploy_type value
 
           # Use yq to update the YAML file
-          yq eval ".work.team.env.tst.deploy_types = DEPLOY_KEYSTORE" -i $FILE_PATH
-                  
+          yq eval ".work.team.env.${ENVIRONMENT}.deploy_types = \"${DEPLOY_TYPE}\"" -i $FILE_PATH                  
       
       - name: Commit Changes
         if: ${{ env.FLAG == '1' }}
