@@ -1,0 +1,12 @@
+appName: simranApp
+work: simranwork
+  team:
+    env:
+      tst:
+        deploy_types: DO_NOT_DEPLOY
+      bld:
+        deploy_types: DO_NOT_DEPLOY
+      int:
+        deploy_types: DO_NOT_DEPLOY
+      pre:
+        deploy_types: DO_NOT_DEPLOY

@@ -1,7 +1,7 @@
 name: Create Pull Request 
 on:
-  # issue_comment:
-  #   types: [created]
+  issue_comment:
+    types: [created]
 
 jobs:
   create_pull_request:
@@ -62,47 +62,11 @@ jobs:
         run: |
           git checkout -b $BRANCH_NAME
       
-      - name: Read Version from Terraform File
+      - name: Update apgx yaml
         id: read_version
         run: |
-          # update_version() {
-          #   local FILE_PATH=$1
-          #   VERSION=$(grep 'version' "$FILE_PATH" | awk -F '\"' '{print $2}')
-          #   echo "VERSION=$VERSION" >> $GITHUB_ENV
-          #   echo "Terraform version: $VERSION"
-      
-          #   if [ "$VERSION" != "$NEW_VERSION" ]; then
-          #     echo "Updating version to $NEW_VERSION"
-          #     sed -i 's/version = \"'$VERSION'\"/version = \"'$NEW_VERSION'\"/' "$FILE_PATH"
-          #     echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
-          #     FLAG=1
-          #     echo "FLAG=$FLAG" >> $GITHUB_ENV
-          #   fi
-          # }
-          # update_version terraform/test-1/terraform.tfvars
-          # update_version terraform/test-2/terraform.tfvars
-          # update_version terraform/test-3/terraform.tfvars
-          update_version() {
-            local FILE_PATHS=("$@")  # Accept array of file paths
-            for FILE_PATH in "${FILE_PATHS[@]}"; do
-              VERSION=$(awk -F '\"' '/version/ {print $2; exit}' "$FILE_PATH")
-              echo "VERSION=$VERSION" >> $GITHUB_ENV
-              echo "Terraform version: $VERSION"
-      
-                    if [ "$VERSION" != "$NEW_VERSION" ]; then
-                      echo "Updating version in $FILE_PATH to $NEW_VERSION"
-                      sed -i '0,/version = \"'$VERSION'\"/s//version = \"'$NEW_VERSION'\"/' "$FILE_PATH"
-                      echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
-                      FLAG=1
-                      echo "FLAG=$FLAG" >> $GITHUB_ENV
-              fi
-            done
-          }
           
-          update_version \
-            "terraform/test-1/terraform.tfvars" \
-            "terraform/test-2/terraform.tfvars" \
-            "terraform/test-3/terraform.tfvars"          
+                  
       
       - name: Commit Changes
         if: ${{ env.FLAG == '1' }}
