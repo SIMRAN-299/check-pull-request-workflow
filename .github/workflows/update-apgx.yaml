@@ -65,12 +65,13 @@ jobs:
       - name: Update apgx yaml
         id: read_version
         run: |
-          FILE_PATH="apgx.yaml"
-          ENVIRONMENT="tst"      # Set the environment to update (e.g., tst)
-          DEPLOY_TYPE="DEPLOY_KEYSTORE"  # Set the new deploy_type value
+            FILE_PATH="apgx.yaml"
+            ENVIRONMENT="tst"      
+            DEPLOY_TYPE="DEPLOY_KEYSTORE"  
 
-          # Use yq to update the YAML file
-          yq eval ".work.team.env.${ENVIRONMENT}.deploy_types = \"${DEPLOY_TYPE}\"" -i $FILE_PATH                
+           
+            sed -i "/${ENVIRONMENT}:/,/deploy_types:/s/deploy_types: .*/deploy_types: \"${DEPLOY_TYPE}\"/" $FILE_PATH
+            echo "Updated deploy_types in ${ENVIRONMENT} environment to ${DEPLOY_TYPE} in $FILE_PATH"          
       
       - name: Commit Changes
         if: ${{ env.FLAG == '1' }}
