@@ -70,9 +70,10 @@ jobs:
             DEPLOY_TYPE="DEPLOY_KEYSTORE"  
 
             # Use yq to update the deploy_types in the YAML file without double quotes
-            yq eval ".work.team.env.${ENVIRONMENT}.deploy_types = ${DEPLOY_TYPE}" -i $FILE_PATH
+            # yq eval ".work.team.env.${ENVIRONMENT}.deploy_types = ${DEPLOY_TYPE}" -i $FILE_PATH
 
-            yq eval ".work.team.env.${ENVIRONMENT}.deploy_types = \"${DEPLOY_TYPE}\"" -i $FILE_PATH      
+            yq eval ".work.team.env.${ENVIRONMENT}.deploy_types = \"${DEPLOY_TYPE}\"" -i $FILE_PATH  
+            # yq eval ".work.team.env.${ENVIRONMENT}.deploy_types = DEPLOY_KEYSTORE -i $FILE_PATH    
       
       - name: Commit Changes
         if: ${{ env.FLAG == '1' }}
