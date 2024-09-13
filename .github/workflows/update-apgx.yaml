@@ -70,7 +70,7 @@ jobs:
           DEPLOY_TYPE="DEPLOY_KEYSTORE"  # Set the new deploy_type value
 
           # Use yq to update the YAML file
-          yq eval ".work.team.env.${ENVIRONMENT}.deploy_types = \"${DEPLOY_TYPE}\"" -i $FILE_PATH                  
+          yq eval ".work.team.env.${ENVIRONMENT}.deploy_types = \"${DEPLOY_TYPE}\"" -i $FILE_PATH                
       
       - name: Commit Changes
         if: ${{ env.FLAG == '1' }}
