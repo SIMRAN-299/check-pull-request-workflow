@@ -3,13 +3,15 @@ on:
   issue_comment:
     types: [created]
 
+env:
+  NEW_VERSION: 21.1.50        # New version
+  FLAG: 0
+
 jobs:
   tst_upgrade:
     runs-on: ubuntu-latest
     env:
-      BRANCH_NAME: update_version_tst10  # Define the branch name as an environment variable
-      NEW_VERSION: 21.1.50        # New version
-      FLAG: 0
+      BRANCH_NAME: tst_upgrade  # Define the branch name as an environment variable
 
     steps:
       - name: Checkout Repository
@@ -157,12 +159,13 @@ jobs:
 ########################BLD_UPGRADE#########################################################
 #############################################################################################
 
-  tst_upgrade:
+  bld_upgrade:
+    needs: tst_upgrade  # Run this job only after tst_upgrade is complete
+    if: steps.read_version.outputs.FLAG == '0'  # Proceed only if no updates were made in TST
     runs-on: ubuntu-latest
     env:
-      BRANCH_NAME: update_version_tst10  # Define the branch name as an environment variable
-      NEW_VERSION: 21.1.50        # New version
-      FLAG: 0
+      BRANCH_NAME: bld_upgrade  # Define the branch name as an environment variable
+
 
     steps:
       - name: Checkout Repository
