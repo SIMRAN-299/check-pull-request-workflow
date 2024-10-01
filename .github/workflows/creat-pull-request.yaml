@@ -101,7 +101,7 @@ jobs:
                       echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
                       FLAG=1
                       echo "FLAG=$FLAG" >> $GITHUB_ENV
-                      echo "FLAG=$FLAG" >> "$GITHUB_OUTPUT"
+                      echo "flag=$FLAG" >> "$GITHUB_OUTPUT"
                       
                     fi
                     done
@@ -172,15 +172,17 @@ jobs:
   bld_upgrade:
     # needs: tst_upgrade  # Run this job only after tst_upgrade is complete
     needs: tst_upgrade  # Make sure it runs after tst_upgrade
-    if: needs.tst_upgrade.outputs.FLAG == '0'
+    if: needs.tst_upgrade.outputs.flag == '0'
     # if: env.FLAG == '0'
     # if: ${{ env.FLAG == '1' }}
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: bld_upgrade  # Define the branch name as an environment variable
 
- 
-
+    steps:
+      - name: Echo Flag
+        run: |
+          echo "Flag value: ${{ needs.tst_upgrade.outputs.flag }}"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
