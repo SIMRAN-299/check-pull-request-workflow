@@ -166,13 +166,13 @@ jobs:
 
   bld_upgrade:
     needs: tst_upgrade  # Run this job only after tst_upgrade is complete
-    if: needs.tst_upgrade.outputs.read_version.FLAG == '0'   # Proceed only if no updates were made in TST
+     if: needs.tst_upgrade.outputs.read_version.FLAG == '0' && github.event_name == 'schedule'  #   # Proceed only if no updates were made in TST
     # if: ${{ env.FLAG == '1' }}
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: bld_upgrade  # Define the branch name as an environment variable
 
-    if: github.event.schedule == '* * * * *'
+ 
 
     steps:
       - name: Checkout Repository
