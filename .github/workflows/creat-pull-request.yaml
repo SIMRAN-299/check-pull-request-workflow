@@ -101,7 +101,8 @@ jobs:
                       echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
                       FLAG=1
                       echo "FLAG=$FLAG" >> $GITHUB_ENV
-                      echo "flag=$FLAG" >> "$GITHUB_OUTPUT"
+
+                      echo "flag=${{ env.FLAG }}" >> $GITHUB_OUTPUT 
                       
                     fi
                     done
@@ -195,7 +196,7 @@ jobs:
             echo "Branch $BRANCH_NAME does not exist remotely."
             echo "::set-output name=result::not_exists"
           fi
-          
+
       - name: Echo Flag
         run: |
           echo "Flag value: ${{ needs.tst_upgrade.outputs.flag }}"
