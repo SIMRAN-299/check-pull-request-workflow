@@ -103,8 +103,8 @@ jobs:
                       echo "FLAG=$FLAG" >> $GITHUB_ENV
                       echo "FLAG=$FLAG" >> "$GITHUB_OUTPUT"
                       
-              fi
-            done
+                    fi
+                    done
           }
           
           update_version \
