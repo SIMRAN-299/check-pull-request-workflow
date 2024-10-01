@@ -101,7 +101,7 @@ jobs:
                       echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
                       FLAG=1
                       echo "FLAG=$FLAG" >> $GITHUB_ENV
-                      echo "::set-output name=FLAG::$FLAG"  # Set the output for FLAG
+                      
               fi
             done
           }
@@ -167,7 +167,8 @@ jobs:
 
   bld_upgrade:
     # needs: tst_upgrade  # Run this job only after tst_upgrade is complete
-    if: needs.tst_upgrade.outputs.read_version.FLAG == '0'   #   # Proceed only if no updates were made in TST
+    needs: tst_upgrade  # Make sure it runs after tst_upgrade
+    if: needs.tst_upgrade.outputs.flag == '0'
     # if: ${{ env.FLAG == '1' }}
     runs-on: ubuntu-latest
     env:
