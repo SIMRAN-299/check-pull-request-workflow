@@ -101,6 +101,7 @@ jobs:
                       echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
                       FLAG=1
                       echo "FLAG=$FLAG" >> $GITHUB_ENV
+                      echo "FLAG=$FLAG" >> "$GITHUB_OUTPUT"
                       
               fi
             done
@@ -110,10 +111,7 @@ jobs:
             "TST/test-1/terraform.tfvars" \
             "TST/test-2/terraform.tfvars" \
             "TST/test-3/terraform.tfvars"          
-      
-      - name: Set Job Output
-        id: set_output
-        run: echo "flag=${{ env.FLAG }}" >> $GITHUB_ENV
+
 
       - name: Commit Changes
         if: ${{ env.FLAG == '1' }}
