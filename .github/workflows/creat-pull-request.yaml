@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: tst_upgrade  # Define the branch name as an environment variable
+  
 
     # if: github.event.schedule == '*/5 * * * *'
     steps:
@@ -123,7 +124,7 @@ jobs:
           git commit -m "Add new-file.txt via GitHub Actions"
 
       - name: Set FLAG
-        run: echo "flag=${{ env.FLAG }}" >> $GITHUB_OUTPUT 
+        run: echo "flag_simran=${{ env.FLAG }}" >> $GITHUB_OUTPUT 
           
 
       - name: Push Changes to Branch
@@ -175,7 +176,7 @@ jobs:
   bld_upgrade:
     # needs: tst_upgrade  # Run this job only after tst_upgrade is complete
     needs: tst_upgrade  # Make sure it runs after tst_upgrade
-    if: needs.tst_upgrade.outputs.flag == '0'
+    if: needs.tst_upgrade.outputs.flag_simran == '0'
     # if: env.FLAG == '0'
     # if: ${{ env.FLAG == '1' }}
     runs-on: ubuntu-latest
@@ -201,7 +202,7 @@ jobs:
 
       - name: Echo Flag
         run: |
-          echo "Flag value: ${{ needs.tst_upgrade.outputs.flag }}"
+          echo "Flag value: ${{ needs.tst_upgrade.outputs.flag_simran }}"
 
       - name: Checkout Existing Branch
         if: steps.check_branch_remotely.outputs.result == 'exists'
