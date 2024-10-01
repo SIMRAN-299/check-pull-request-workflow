@@ -1,7 +1,8 @@
 name: Create Pull Request 
 on:
-  issue_comment:
-    types: [created]
+  schedule:
+    - cron: "*/5 * * * *"  # Run tst_upgrade job every 5 minutes
+    - cron: "* * * * *"     # Run bld_upgrade job every minute
 
 env:
   NEW_VERSION: 21.1.50        # New version
@@ -13,6 +14,7 @@ jobs:
     env:
       BRANCH_NAME: tst_upgrade  # Define the branch name as an environment variable
 
+    if: github.event.schedule == '*/5 * * * *'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -158,11 +160,12 @@ jobs:
 #############################################################################################
 ########################BLD_UPGRADE#########################################################
 #############################################################################################
-
+  if: github.event.schedule == '* * * * *'
+  
   bld_upgrade:
     needs: tst_upgrade  # Run this job only after tst_upgrade is complete
-    # if: needs.tst_upgrade.outputs.read_version.FLAG == '0'   # Proceed only if no updates were made in TST
-    if: ${{ env.FLAG == '1' }}
+    if: needs.tst_upgrade.outputs.read_version.FLAG == '0'   # Proceed only if no updates were made in TST
+    # if: ${{ env.FLAG == '1' }}
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: bld_upgrade  # Define the branch name as an environment variable
