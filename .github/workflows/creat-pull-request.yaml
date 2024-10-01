@@ -1,5 +1,7 @@
 name: Create Pull Request 
 on:
+  issue_comment:
+    types: [created]
   schedule:
     - cron: "*/5 * * * *"  # Run tst_upgrade job every 5 minutes
     - cron: "* * * * *"     # Run bld_upgrade job every minute
@@ -171,7 +173,7 @@ jobs:
       BRANCH_NAME: bld_upgrade  # Define the branch name as an environment variable
 
     if: github.event.schedule == '* * * * *'
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
