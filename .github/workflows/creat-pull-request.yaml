@@ -102,7 +102,7 @@ jobs:
                       FLAG=1
                       echo "FLAG=$FLAG" >> $GITHUB_ENV
 
-                      echo "flag=${{ env.FLAG }}" >> $GITHUB_OUTPUT 
+                      
                       
                     fi
                     done
@@ -122,7 +122,9 @@ jobs:
           git add .
           git commit -m "Add new-file.txt via GitHub Actions"
 
-    
+      - name: Set FLAG
+        run: echo "flag=${{ env.FLAG }}" >> $GITHUB_OUTPUT 
+          
 
       - name: Push Changes to Branch
         if: ${{ env.FLAG == '1' }}
