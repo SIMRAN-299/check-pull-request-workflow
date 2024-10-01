@@ -121,6 +121,8 @@ jobs:
           git add .
           git commit -m "Add new-file.txt via GitHub Actions"
 
+    
+
       - name: Push Changes to Branch
         if: ${{ env.FLAG == '1' }}
         run: |
@@ -170,7 +172,7 @@ jobs:
   bld_upgrade:
     # needs: tst_upgrade  # Run this job only after tst_upgrade is complete
     needs: tst_upgrade  # Make sure it runs after tst_upgrade
-    if: needs.tst_upgrade.outputs.flag == '0'
+    if: needs.tst_upgrade.outputs.FLAG == '0'
     # if: env.FLAG == '0'
     # if: ${{ env.FLAG == '1' }}
     runs-on: ubuntu-latest
