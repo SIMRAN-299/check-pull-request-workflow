@@ -112,8 +112,8 @@ jobs:
             "TST/test-3/terraform.tfvars"          
       
       - name: Set Job Output
-          id: set_output
-          run: echo "flag=${{ env.FLAG }}" >> $GITHUB_ENV
+        id: set_output
+        run: echo "flag=${{ env.FLAG }}" >> $GITHUB_ENV
 
       - name: Commit Changes
         if: ${{ env.FLAG == '1' }}
