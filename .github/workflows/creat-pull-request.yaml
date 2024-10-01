@@ -13,6 +13,8 @@ env:
 jobs:
   tst_upgrade:
     runs-on: ubuntu-latest
+    outputs:
+      flag_simran: ${{ steps.set_flag.outputs.flag_simran }}
     env:
       BRANCH_NAME: tst_upgrade  # Define the branch name as an environment variable
   
@@ -124,6 +126,7 @@ jobs:
           git commit -m "Add new-file.txt via GitHub Actions"
 
       - name: Set FLAG
+        id: set_flag
         run: echo "flag_simran=${{ env.FLAG }}" >> $GITHUB_OUTPUT 
           
 
