@@ -101,6 +101,7 @@ jobs:
                       echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
                       FLAG=1
                       echo "FLAG=$FLAG" >> $GITHUB_ENV
+                      echo "::set-output name=FLAG::$FLAG"  # Set the output for FLAG
               fi
             done
           }
