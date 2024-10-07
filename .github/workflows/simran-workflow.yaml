@@ -1,4 +1,4 @@
-name: Create Pull Request 
+name: Simran test workflow
 on:
   issue_comment:
     types: [created]
@@ -7,7 +7,7 @@ on:
   #   - cron: "* * * * *"     # Run bld_upgrade job every minute
 
 env:
-  NEW_VERSION: 21.1.56        # New version
+  NEW_VERSION: 21.1.42        # New version
   FLAG: 0
 
 jobs:
