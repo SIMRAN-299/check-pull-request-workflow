@@ -7,7 +7,7 @@ on:
   #   - cron: "* * * * *"     # Run bld_upgrade job every minute
 
 env:
-  NEW_VERSION: 21.1.52        # New version
+  NEW_VERSION: 21.1.55        # New version
   FLAG: 0
 
 jobs:
