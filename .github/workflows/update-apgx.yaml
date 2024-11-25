@@ -1,7 +1,6 @@
 name: Create Pull Request for tls-trustore
 on:
-  issue_comment:
-    types: [created]
+  workflow_dispatch:
 
 jobs:
   create_pull_request:
@@ -84,6 +83,7 @@ jobs:
           yq eval ".tls.keystore-name = \"truststore-${NEW_NUMBER}\"" -i "$NEW_FILE"
 
           echo "Updated truststore-name to truststore-${NEW_NUMBER} in $NEW_FILE"
+          echo "NEW_NUMBER=${NEW_NUMBER}" >> $GITHUB_ENV"
 
       - name: Update apgx yaml
         id: read_version
