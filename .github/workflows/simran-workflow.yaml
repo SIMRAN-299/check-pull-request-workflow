@@ -1,79 +1,79 @@
-name: Simran test workflow
-on:
-  issue_comment:
-    types: [created]
+# name: Simran test workflow
+# on:
+#   issue_comment:
+#     types: [created]
 
-env:
-  NEW_VERSION: 21.1.42  # New version
-  FLAG: 0
+# env:
+#   NEW_VERSION: 21.1.42  # New version
+#   FLAG: 0
 
-jobs:
-  tst_upgrade:
-    runs-on: ubuntu-latest
-    outputs:
-      flag_simran: ${{ steps.set_flag.outputs.flag_simran }}
-    env:
-      BRANCH_NAME: Check-pull-request-branch  # Define the branch name as an environment variable
+# jobs:
+#   tst_upgrade:
+#     runs-on: ubuntu-latest
+#     outputs:
+#       flag_simran: ${{ steps.set_flag.outputs.flag_simran }}
+#     env:
+#       BRANCH_NAME: Check-pull-request-branch  # Define the branch name as an environment variable
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v2
 
-      - name: Check if Branch Exists Remotely
-        id: check_branch_remotely
-        run: |
-          echo "Checking if branch $BRANCH_NAME exists remotely..."
-          if git ls-remote --heads origin $BRANCH_NAME | grep -q "refs/heads/$BRANCH_NAME"; then
-            echo "Branch $BRANCH_NAME already exists remotely."
-            echo "::set-output name=result::exists"
-          else
-            echo "Branch $BRANCH_NAME does not exist remotely."
-            echo "::set-output name=result::not_exists"
-          fi
+#       - name: Check if Branch Exists Remotely
+#         id: check_branch_remotely
+#         run: |
+#           echo "Checking if branch $BRANCH_NAME exists remotely..."
+#           if git ls-remote --heads origin $BRANCH_NAME | grep -q "refs/heads/$BRANCH_NAME"; then
+#             echo "Branch $BRANCH_NAME already exists remotely."
+#             echo "::set-output name=result::exists"
+#           else
+#             echo "Branch $BRANCH_NAME does not exist remotely."
+#             echo "::set-output name=result::not_exists"
+#           fi
 
-      - name: Checkout Existing Branch
-        if: steps.check_branch_remotely.outputs.result == 'exists'
-        run: |
-          git fetch origin $BRANCH_NAME:$BRANCH_NAME
-          git checkout $BRANCH_NAME
+#       - name: Checkout Existing Branch
+#         if: steps.check_branch_remotely.outputs.result == 'exists'
+#         run: |
+#           git fetch origin $BRANCH_NAME:$BRANCH_NAME
+#           git checkout $BRANCH_NAME
 
-      - name: Create New Branch
-        if: steps.check_branch_remotely.outputs.result == 'not_exists'
-        run: |
-          git checkout -b $BRANCH_NAME
+#       - name: Create New Branch
+#         if: steps.check_branch_remotely.outputs.result == 'not_exists'
+#         run: |
+#           git checkout -b $BRANCH_NAME
 
-      - name: Read Version from Terraform File
-        id: read_version
-        run: |
-          update_version() {
-            local FILE_PATHS=("$@")
-            for FILE_PATH in "${FILE_PATHS[@]}"; do
-              VERSION=$(awk -F '\"' '/version/ {print $2; exit}' "$FILE_PATH")
-              echo "VERSION=$VERSION" >> $GITHUB_ENV
-              echo "Terraform version: $VERSION"
+#       - name: Read Version from Terraform File
+#         id: read_version
+#         run: |
+#           update_version() {
+#             local FILE_PATHS=("$@")
+#             for FILE_PATH in "${FILE_PATHS[@]}"; do
+#               VERSION=$(awk -F '\"' '/version/ {print $2; exit}' "$FILE_PATH")
+#               echo "VERSION=$VERSION" >> $GITHUB_ENV
+#               echo "Terraform version: $VERSION"
 
-              if [ "$VERSION" != "$NEW_VERSION" ]; then
-                echo "Updating version in $FILE_PATH to $NEW_VERSION"
-                sed -i '0,/version = \"'$VERSION'\"/s//version = \"'$NEW_VERSION'\"/' "$FILE_PATH"
-                echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
-                FLAG=1
-                echo "FLAG=$FLAG" >> $GITHUB_ENV
-              fi
-            done
-          }
+#               if [ "$VERSION" != "$NEW_VERSION" ]; then
+#                 echo "Updating version in $FILE_PATH to $NEW_VERSION"
+#                 sed -i '0,/version = \"'$VERSION'\"/s//version = \"'$NEW_VERSION'\"/' "$FILE_PATH"
+#                 echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
+#                 FLAG=1
+#                 echo "FLAG=$FLAG" >> $GITHUB_ENV
+#               fi
+#             done
+#           }
 
-          update_version \
-            "TST/test-1/terraform.tfvars" \
-            "TST/test-2/terraform.tfvars" \
-            "TST/test-3/terraform.tfvars"
+#           update_version \
+#             "TST/test-1/terraform.tfvars" \
+#             "TST/test-2/terraform.tfvars" \
+#             "TST/test-3/terraform.tfvars"
 
-      - name: Commit Changes
-        run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions"
-          git add .
-          git commit --allow-empty -m "chore: dummy commit to ensure push"
+#       - name: Commit Changes
+#         run: |
+#           git config --local user.email "actions@github.com"
+#           git config --local user.name "GitHub Actions"
+#           git add .
+#           git commit --allow-empty -m "chore: dummy commit to ensure push"
 
-      - name: Push Changes to Branch
-        run: |
-          git push origin $BRANCH_NAME
+#       - name: Push Changes to Branch
+#         run: |
+#           git push origin $BRANCH_NAME
