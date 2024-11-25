@@ -7,7 +7,7 @@ jobs:
   create_pull_request:
     runs-on: ubuntu-latest
     env:
-      BRANCH_NAME: keystore-renewal-1  # Define the branch name as an environment variable
+      BRANCH_NAME: keystore-renewal-2  # Define the branch name as an environment variable
       FLAG: 1
 
     steps:
@@ -61,7 +61,7 @@ jobs:
         run: |
           git checkout -b $BRANCH_NAME
       
-      - name: Rename the YAML File with the Largest Number
+      - name: Update apgi-trustore in helm-overrides
         run: |
           # Navigate to the helm-overrides folder
           cd helm-overrides
@@ -95,8 +95,8 @@ jobs:
             # Use yq to update the deploy_types in the YAML file without double quotes
             # yq eval ".work.team.env.${ENVIRONMENT}.deploy_types = ${DEPLOY_TYPE}" -i $FILE_PATH
 
-            yq eval ".work.team.env.${ENVIRONMENT}.deploy_types = \"${DEPLOY_TYPE}\"" -i $FILE_PATH  
-            # yq eval ".work.team.env.${ENVIRONMENT}.deploy_types = DEPLOY_KEYSTORE -i $FILE_PATH    
+            # yq eval ".work.team.env.${ENVIRONMENT}.deploy_types = \"${DEPLOY_TYPE}\"" -i $FILE_PATH  
+            yq eval ".work.team.env.${ENVIRONMENT}.deploy_types = DEPLOY_KEYSTORE_1 -i $FILE_PATH    
       
       - name: Commit Changes
         if: ${{ env.FLAG == '1' }}
