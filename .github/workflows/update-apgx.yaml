@@ -7,7 +7,7 @@ jobs:
   create_pull_request:
     runs-on: ubuntu-latest
     env:
-      BRANCH_NAME: keystore-renewal  # Define the branch name as an environment variable
+      BRANCH_NAME: keystore-renewal-1  # Define the branch name as an environment variable
       FLAG: 1
 
     steps:
