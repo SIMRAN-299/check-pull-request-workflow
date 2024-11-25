@@ -1,7 +1,7 @@
 name: Create Pull Request for tls-trustore
 on:
-  # issue_comment:
-  #   types: [created]
+  issue_comment:
+    types: [created]
 
 jobs:
   create_pull_request:
