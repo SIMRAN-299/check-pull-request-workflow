@@ -1,5 +1,5 @@
 tls:
-  keystore-name: truststore-7
+  keystore-name: truststore-8
   resourceType: KeyStore
   alias:
     name: apge-shared-keystore-int07
