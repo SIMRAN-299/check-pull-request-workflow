@@ -65,21 +65,26 @@ jobs:
         run: |
           # Navigate to the helm-overrides folder
           cd helm-overrides
-      
+
           # Find the file with the largest number
           LARGEST_FILE=$(ls apgi-trustore-*.yaml | sort -V | tail -n 1)
           echo "Largest file found: $LARGEST_FILE"
-      
+
           # Extract the largest number and increment it
           CURRENT_NUMBER=$(echo $LARGEST_FILE | grep -oP '\d+(?=\.yaml)')
           NEW_NUMBER=$((CURRENT_NUMBER + 1))
           NEW_FILE="apgi-trustore-${NEW_NUMBER}.yaml"
           echo "Renaming $LARGEST_FILE to $NEW_FILE"
-      
+
           # Rename the file
           mv "$LARGEST_FILE" "$NEW_FILE"
-      
+          
           echo "Renamed $LARGEST_FILE to $NEW_FILE successfully."
+
+          yq eval ".tls.keystore-name = \"truststore-${NEW_NUMBER}\"" -i "$NEW_FILE"
+
+          echo "Updated truststore-name to truststore-${NEW_NUMBER} in $NEW_FILE"
+
       - name: Update apgx yaml
         id: read_version
         run: |
